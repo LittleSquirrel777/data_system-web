@@ -138,7 +138,7 @@ export default {
         nums = this.blockCount
       }
       for (let i = 0; i < nums; i++) {
-        this.squares.push({ id: i, color: 'rgb(141,170,220)', showTooltip: false})
+        this.squares.push({ id: i, color: 'rgb(144, 238, 144)', showTooltip: false})
       }
     },
     loadVisibleSquares(squares) {
@@ -219,7 +219,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7000/audit',
+        url: 'http://localhost:7002/audit',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase
@@ -274,7 +274,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7000/destroy',
+        url: 'http://localhost:7002/destroy',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase,
@@ -320,7 +320,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7000/destroy_location',
+        url: 'http://localhost:7002/destroy_location',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase,
@@ -375,7 +375,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7000/recovery',
+        url: 'http://localhost:7002/recovery',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase,

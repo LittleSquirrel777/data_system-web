@@ -15,13 +15,13 @@ const useUserStore = defineStore(
     const failure_time = ref(localStorage.failure_time ?? '')
     const permissions = ref<string[]>([])
     const isLogin = computed(() => {
-      let retn = false
-      if (token.value) {
-        if (new Date().getTime() < parseInt(failure_time.value) * 1000) {
-          retn = true
-        }
-      }
-      return retn
+      // let retn = false
+      // if (token.value) {
+      //   if (new Date().getTime() < parseInt(failure_time.value) * 1000) {
+      //     retn = true
+      //   }
+      // }
+      return true
     })
 
     // 登录

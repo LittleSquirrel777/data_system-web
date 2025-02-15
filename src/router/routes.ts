@@ -82,7 +82,7 @@ const systemRoutes: RouteRecordRaw[] = [
 const asyncRoutes: Route.recordMainRaw[] = [
   {
     meta: {
-      title: '搜索',
+      title: '检索完整性验证',
       icon: 'sidebar-default',
     },
     children: [
@@ -91,7 +91,7 @@ const asyncRoutes: Route.recordMainRaw[] = [
   },
   {
     meta: {
-      title: '加密',
+      title: '计算正确性验证',
       icon: 'ep:grid',
     },
     children: [
@@ -100,13 +100,44 @@ const asyncRoutes: Route.recordMainRaw[] = [
   },
   {
     meta: {
-      title: '审计',
+      title: '存储完整性验证',
       icon: 'sidebar-default',
     },
     children: [
       Audit,
     ],
-  }
+  },
+  // {
+  //   path: 'search',
+  //   name: 'search',
+  //   component: () => import('@/views/search/search.vue'),
+  //   meta: {
+  //     title: '检索',
+  //     // icon: 'el-icon-s-check'
+  //   },
+  // },
+  // {
+  //   path: 'encryption',
+  //   name: 'encryption',
+  //   beforeEnter() {
+  //     // 直接跳转，无需加载组件
+  //     window.location.href = 'http://127.0.0.1:3000';
+  //   },
+  //   component: () => import('@/views/EncCompute/audit.vue'),
+  //   meta: {
+  //     title: '加密',
+  //     // icon: 'el-icon-s-check'
+  //   },
+  // },
+  // {
+  //   path: 'audit',
+  //   name: 'audit',
+  //   component: () => import('@/views/audit/audit.vue'),
+  //   meta: {
+  //     title: '审计',
+  //     // icon: 'el-icon-s-check'
+  //   },
+  // }
 ]
 
 const constantRoutesByFilesystem = generatedRoutes.filter((item) => {

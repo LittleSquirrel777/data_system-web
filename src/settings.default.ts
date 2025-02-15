@@ -47,7 +47,7 @@ const globalSettingsDefault: RecursiveRequired<Settings.all> = {
   copyright: {
     enable: true,
     dates: '',
-    company: '可动态组合的密文检索系统',
+    company: '高置信的密文数据完整性验证工具集',
     website: '',
     beian: '',
   },

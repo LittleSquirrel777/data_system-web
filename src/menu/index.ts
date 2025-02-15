@@ -5,7 +5,7 @@ import type { Menu } from '#/global'
 const menu: Menu.recordMainRaw[] = [
   {
     meta: {
-      title: '搜索',
+      title: '检索完整性验证',
       icon: 'sidebar-default',
     },
     children: [
