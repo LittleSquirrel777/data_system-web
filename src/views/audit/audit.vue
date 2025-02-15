@@ -71,12 +71,12 @@
     <div style="margin-left: 30px; margin-top: 50px; margin-right: 50px">
       <div v-if="isReloadData" v-for="square in visibleSquares" :key="square.id" class="square" :style="getSquareStyle(square)" @mouseenter="square.showTooltip = true"
            @mouseleave="square.showTooltip = false">
-        <div v-if="square.showTooltip & this.destroy_flag" class="hover_container1" color="red">
+        <div v-if="square.showTooltip & this.destroy_location_flag" class="hover_container1" color="red">
           <div>id:{{square.id}}</div>
           <div>pre_hash:{{square.pre_hash}}</div>
           <div>des_hash:{{square.des_hash}}</div>
         </div>
-        <div v-if="square.showTooltip & !this.destroy_flag" class="hover_container2" color="red">
+        <div v-if="square.showTooltip & !this.destroy_location_flag" class="hover_container2" color="red">
           id:{{square.id}}
         </div>
       </div>
@@ -109,6 +109,7 @@ export default {
       dialog_show: false,
       node_num: '',
       destroy_flag: false,
+      destroy_location_flag: false,
       num: 0,
       Width: { 'width': '0px' },
       squares: [],
@@ -217,6 +218,7 @@ export default {
         });
         return;
       }
+      this.destroy_location_flag = false;
       axios({
         method: 'post',
         url: 'http://localhost:7002/audit',
@@ -256,10 +258,11 @@ export default {
             duration: 2000
           });
           console.error(error);
-          if (this.destroySquares) {
-            this.changecolor(this.destroySquares)
-            this.loadVisibleSquares(this.destroySquares)
-          }
+          // if (this.squares) {
+          this.generateSquares();
+          this.changecolor(this.squares)
+          this.loadVisibleSquares(this.squares)
+          // }
         });
     },
     destroy() {
@@ -282,17 +285,17 @@ export default {
         timeout: 10 * 60 * 1000
       })
         .then(response => {
-          this.destroy_flag = true;
+          this.destroy_flag = true
           this.visibleSquares = []
-          const destroy_locations = response.data.location;
-          const pre_hashs = response.data.pre_hash;
-          const des_hashs = response.data.des_hash;
-          this.destroySquares = []
-          for (let i = 0; i < destroy_locations.length; i++) {
-            // this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(141,170,220)'})
-            this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(220,20,60)', pre_hash: pre_hashs[i], des_hash: des_hashs[i], showTooltip: false})
-            // this.destroySquares[i].color = 'darked'
-          }
+          // const destroy_locations = response.data.location;
+          // const pre_hashs = response.data.pre_hash;
+          // const des_hashs = response.data.des_hash;
+          // this.destroySquares = []
+          // for (let i = 0; i < destroy_locations.length; i++) {
+          //   // this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(141,170,220)'})
+          //   this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(220,20,60)', pre_hash: pre_hashs[i], des_hash: des_hashs[i], showTooltip: false})
+          //   // this.destroySquares[i].color = 'darked'
+          // }
           this.$notify({
             title: '成功',
             message: '破坏成功',
@@ -341,6 +344,7 @@ export default {
           } else {
             this.destroySquares = []
             this.destroy_flag = true
+            this.destroy_location_flag = true
             for (let i = 0; i < destroy_locations.length; i++) {
               // this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(141,170,220)'})
               this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(220,20,60)', pre_hash: pre_hashs[i], des_hash: des_hashs[i], showTooltip: false})
