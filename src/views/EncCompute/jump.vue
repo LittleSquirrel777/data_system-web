@@ -5,7 +5,7 @@
 <script>
 export default {
   mounted() {
-    window.location.replace('http://10.201.153.203:3000');
+    window.location.replace('http://127.0.0.1:3000');
   }
 };
 </script>

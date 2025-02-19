@@ -32,7 +32,7 @@ export default ({ mode, command }) => {
       // https: false, // 是否开启 https
       open: false, // 是否自动在浏览器打开
       cors: true, // 允许跨域  8月更新
-      port: 8001, // 端口号
+      port: 9001, // 端口号
 
       proxy: {
         '/proxy': {

@@ -188,29 +188,29 @@ function drawChart2(data1, data3) {
   // option2.series[0].data = data3
   // option2 && chart2.setOption(option2)
 }
-onMounted(() => {
-  let timer = null
-  // 每5s刷新数据
-  timer = setInterval(() => {
-    getNodeInfo()
-    if (data1.length > 5) {
-      data1.splice(0, 1)
-    }
-    if (data2.length > 5) {
-      data2.splice(0, 1)
-    }
-    if (data3.length > 5) {
-      data3.splice(0, 1)
-    }
-    // 获取dom元素,图表初始化
-    drawChart1(data1, data2)
-    drawChart2(data1, data3)
-  }, 3000)
-  function getTime() {
-    const time = new Date()
-    return time.toLocaleString()
-  }
-})
+// onMounted(() => {
+//   let timer = null
+//   // 每5s刷新数据
+//   timer = setInterval(() => {
+//     getNodeInfo()
+//     if (data1.length > 5) {
+//       data1.splice(0, 1)
+//     }
+//     if (data2.length > 5) {
+//       data2.splice(0, 1)
+//     }
+//     if (data3.length > 5) {
+//       data3.splice(0, 1)
+//     }
+//     // 获取dom元素,图表初始化
+//     drawChart1(data1, data2)
+//     drawChart2(data1, data3)
+//   }, 3000)
+//   function getTime() {
+//     const time = new Date()
+//     return time.toLocaleString()
+//   }
+// })
 </script>
 
 <template>

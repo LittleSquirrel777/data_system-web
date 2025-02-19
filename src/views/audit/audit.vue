@@ -71,12 +71,12 @@
     <div style="margin-left: 30px; margin-top: 50px; margin-right: 50px">
       <div v-if="isReloadData" v-for="square in visibleSquares" :key="square.id" class="square" :style="getSquareStyle(square)" @mouseenter="square.showTooltip = true"
            @mouseleave="square.showTooltip = false">
-        <div v-if="square.showTooltip & this.destroy_location_flag" class="hover_container1" color="red">
+        <div v-if="square.showTooltip & this.destroy_location_flag & square.isDestroy" class="hover_container1" color="red">
           <div>id:{{square.id}}</div>
           <div>pre_hash:{{square.pre_hash}}</div>
           <div>des_hash:{{square.des_hash}}</div>
         </div>
-        <div v-if="square.showTooltip & !this.destroy_location_flag" class="hover_container2" color="red">
+        <div v-if="square.showTooltip & !square.isDestroy" class="hover_container2" color="red">
           id:{{square.id}}
         </div>
       </div>
@@ -118,9 +118,9 @@ export default {
       pageSize: 500,
       currentPage: 1,
       showLoadMore: true,
-      showTooltip: false, // 控制提示框的显示与隐藏
+      // showTooltip: false, // 控制提示框的显示与隐藏
       isReloadData: true,  //动态刷新展示的div
-      recovery_flag: true,
+      audit_block_index: []
     }
   },
   // mounted() {
@@ -188,6 +188,7 @@ export default {
       // this.generateSquares()
     },
     deleteLastAudit() {
+      
       this.blockCount = ""
       this.auditResult = ""
       this.totalAuditTime = ""
@@ -195,10 +196,12 @@ export default {
       this.computeTime = ""
       this.preparationTime = ""
       this.proveTime = ""
-      this.visibleSquares = []
-      this.squares = []
-      this.destroySquares = []
       this.destroy_flag = false
+      this.destroy_location_flag = false
+      this.squares = []
+      this.visibleSquares = []
+      this.destroySquares = []
+      this.audit_block_index = []
       // this.loadVisibleSquares(this.squares)
       // this.loadVisibleSquares(this.squares)
     },
@@ -221,7 +224,7 @@ export default {
       this.destroy_location_flag = false;
       axios({
         method: 'post',
-        url: 'http://localhost:7002/audit',
+        url: 'http://127.0.0.1:7002/audit',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase
@@ -230,6 +233,7 @@ export default {
       })
         .then(response => {
           this.blockCount = response.data.blockCount;
+          this.audit_block_index = response.data.audit_block_index;
           this.auditResult = response.data.auditResult;
           this.totalAuditTime = response.data.totalAuditTime;
           this.readTime = response.data.readTime;
@@ -237,7 +241,6 @@ export default {
           this.preparationTime = response.data.preparationTime;
           this.proveTime = response.data.proveTime;
           if (this.auditResult == "Success") {
-            this.visibleSquares = []
             this.generateSquares();
             this.loadVisibleSquares(this.squares);
             this.$notify({
@@ -247,6 +250,13 @@ export default {
               duration: 2000
             });
           } else {
+            // console.error(error);
+            this.destroy_flag = true
+            this.squares = []
+            for (let i = 0; i < this.audit_block_index.length; i++) {
+              this.squares.push({ id: this.audit_block_index[i], color: 'rgb(251,180,183)', showTooltip: false})
+            }
+            this.loadVisibleSquares(this.squares)
             throw new Error("audit failed")
           }
         })
@@ -257,12 +267,6 @@ export default {
             type: 'error',
             duration: 2000
           });
-          console.error(error);
-          // if (this.squares) {
-          this.generateSquares();
-          this.changecolor(this.squares)
-          this.loadVisibleSquares(this.squares)
-          // }
         });
     },
     destroy() {
@@ -277,7 +281,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7002/destroy',
+        url: 'http://127.0.0.1:7002/destroy',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase,
@@ -323,7 +327,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7002/destroy_location',
+        url: 'http://127.0.0.1:7002/destroy_location',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase,
@@ -331,10 +335,11 @@ export default {
         timeout: 10 * 60 * 1000
       })
         .then(response => {
-          const destroy_locations = response.data.location;
+          const audit_blocks = response.data.audit_location;
+          const destroy_blocks = response.data.des_location;
           const pre_hashs = response.data.pre_hash;
           const des_hashs = response.data.des_hash;
-          if (destroy_locations.length == 0) {
+          if (destroy_blocks.length == 0) {
             this.$notify({
               title: '错误',
               message: '数据库未被破坏',
@@ -343,12 +348,15 @@ export default {
             });
           } else {
             this.destroySquares = []
-            this.destroy_flag = true
             this.destroy_location_flag = true
-            for (let i = 0; i < destroy_locations.length; i++) {
+            for (let i = 0; i < audit_blocks.length; i++) {
               // this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(141,170,220)'})
-              this.destroySquares.push({ id: destroy_locations[i], color: 'rgb(220,20,60)', pre_hash: pre_hashs[i], des_hash: des_hashs[i], showTooltip: false})
-              // this.destroySquares[i].color = 'darked'
+              const indexNum = destroy_blocks.indexOf(audit_blocks[i])
+              if (indexNum != -1) {
+                this.destroySquares.push({ id: audit_blocks[i], color: 'rgb(220,20,60)', pre_hash: pre_hashs[indexNum], des_hash: des_hashs[indexNum], isDestroy : true, showTooltip: false})
+              } else {
+                this.destroySquares.push({ id: audit_blocks[i], color: 'rgb(251,180,183)', isDestroy : false, showTooltip: false})
+              }
             }
             this.loadVisibleSquares(this.destroySquares)
             this.$notify({
@@ -379,7 +387,7 @@ export default {
       }
       axios({
         method: 'post',
-        url: 'http://localhost:7002/recovery',
+        url: 'http://127.0.0.1:7002/recovery',
         responseType: 'json',
         data: {
           databaseName: this.selectedDatabase,
